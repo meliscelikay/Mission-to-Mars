@@ -98,7 +98,23 @@ def mars_facts():
     # Convert dataframe into HTML format, add bootstrap
     return df.to_html(classes="table table-striped")
 
-if __name__ == "__main__":
+def hemispheres(browser):
+    url = 'https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars'
+    browser.visit(url)
 
-    # If running as script, print scraped data
+    hemisphere_image_urls = []
+
+    for i in range(4):
+        hemispheres = {}
+        browser.find_by_css('a.product-item h3')[i].click()
+        element = browser.find_link_by_text('Sample').first
+        img_url = element['href']
+        title = browser.find_by_css("h2.title").text
+        hemispheres["img_url"] = img_url
+        hemispheres["title"] = title
+        hemisphere_image_urls.append(hemispheres)
+        browser.back()
+    return hemisphere_image_urls
+
+if __name__ == "__main__":
     print(scrape_all())
